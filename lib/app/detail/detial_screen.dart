@@ -4,7 +4,6 @@ import 'package:financialjournal_app/utils/money_formatter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 
 class DetailScreen extends StatefulWidget {
   const DetailScreen({super.key});
@@ -29,7 +28,7 @@ class _DetailScreenState extends State<DetailScreen> {
                 padding: const EdgeInsets.symmetric(
                   horizontal: 15,
                 ),
-                margin: EdgeInsets.symmetric(horizontal: 3),
+                margin: const EdgeInsets.symmetric(horizontal: 3),
                 height: 60,
                 decoration: const BoxDecoration(
                   color: Colors.black,
@@ -128,7 +127,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text("Kirimlar"),
+                                    const Text("Kirimlar"),
                                     Text(
                                       "${moneyFormatter.formatter(data: 25000)} UZS",
                                       style: GoogleFonts.nunito(
@@ -167,7 +166,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text("Chiqimlar"),
+                                    const Text("Chiqimlar"),
                                     Text(
                                       "${moneyFormatter.formatter(data: 25000)} UZS",
                                       style: GoogleFonts.nunito(
