@@ -1,4 +1,4 @@
-import 'package:financialjournal_app/app/detail/widgets/outlay_tile.dart';
+import 'outlay_tile.dart';
 
 import 'package:flutter/material.dart';
 

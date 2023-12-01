@@ -1,6 +1,7 @@
-import 'package:financialjournal_app/app/detail/widgets/income_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import 'income_tile.dart';
 
 class IncomesList extends StatelessWidget {
   const IncomesList({

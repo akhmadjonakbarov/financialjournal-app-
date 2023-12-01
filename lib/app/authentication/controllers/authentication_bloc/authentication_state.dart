@@ -5,7 +5,12 @@ class AuthenticationState {}
 
 class AuthenticationInitialState extends AuthenticationState {}
 
-class AuthenticatedState extends AuthenticationState {}
+class AuthenticatingState extends AuthenticationState {}
+
+class AuthenticatedState extends AuthenticationState {
+  final UserModel user;
+  AuthenticatedState({required this.user});
+}
 
 class UnAuthenticatedState extends AuthenticationState {}
 

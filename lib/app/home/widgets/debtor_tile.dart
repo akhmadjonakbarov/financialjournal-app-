@@ -1,10 +1,28 @@
-import 'package:financialjournal_app/app/detail/detial_screen.dart';
+// ignore_for_file: must_be_immutable
+
+import '../models/debtor_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
+
+import '../../detail/detial_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../controllers/blocs/debtor/debtor_bloc.dart';
+
 class DebtorTile extends StatelessWidget {
-  const DebtorTile({super.key});
+  final DebtorModel debtor;
+
+  DebtorTile({super.key, required this.debtor});
+
+  Map<String, dynamic> newDebtorData = {
+    'name': '',
+    'phone': '',
+  };
+
+  // flutter variables
+  final _debtorUpdateFormKey = GlobalKey<FormState>();
 
   void _showDeleteDialog(BuildContext context) {
     showDialog(
@@ -14,7 +32,7 @@ class DebtorTile extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Rostan ham User o\'chirishni istaysizmi?',
+              'Rostan ham ${debtor.name} o\'chirishni istaysizmi?',
               textAlign: TextAlign.center,
               style: GoogleFonts.nunito(fontSize: 22),
             ),
@@ -33,7 +51,12 @@ class DebtorTile extends StatelessWidget {
                   ),
                   child: InkWell(
                     borderRadius: BorderRadius.circular(16),
-                    onTap: () => Navigator.of(context).pop(),
+                    onTap: () {
+                      context
+                          .read<DebtorBloc>()
+                          .add(DebtorDeleteEvent(id: debtor.id));
+                      Navigator.of(context).pop();
+                    },
                     child: Align(
                       alignment: Alignment.center,
                       child: Text(
@@ -76,20 +99,119 @@ class DebtorTile extends StatelessWidget {
     );
   }
 
+  void _showUpdateDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Form(
+          key: _debtorUpdateFormKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                initialValue: debtor.name,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: (name) {
+                  newDebtorData['name'] = name;
+                },
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              TextFormField(
+                initialValue: "+998 ${debtor.phonenumber}",
+                keyboardType: TextInputType.phone,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: "+998 99 123 45 67",
+                ),
+                inputFormatters: [
+                  MaskedInputFormatter(
+                    '+### ## ### ## ##',
+                  )
+                ],
+                onChanged: (phone) {
+                  String newPhone = phone.replaceAll('+998', '');
+                  newPhone = newPhone.replaceAll(' ', '');
+                  newDebtorData['phone'] = newPhone;
+                },
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Iltimos telefon raqam kiriting!';
+                  } else if (value.length < 9) {
+                    return 'Telefon raqam mos kelmadi!';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Ink(
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(5),
+                  onTap: () {
+                    bool isValid =
+                        _debtorUpdateFormKey.currentState!.validate();
+                    if (isValid) {
+                      _debtorUpdateFormKey.currentState!.save();
+                      context.read<DebtorBloc>().add(DebtorUpdateEvent(
+                            newName: newDebtorData['name'],
+                            newPhone: newDebtorData['phone'],
+                            id: debtor.id,
+                          ));
+                      Navigator.of(context).pop();
+                      _debtorUpdateFormKey.currentState!.reset();
+                    }
+                    // context.read<Bloc>()
+                  },
+                  child: Align(
+                    child: Text(
+                      'Yangilash',
+                      style: GoogleFonts.nunito(
+                        fontSize: 18,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    newDebtorData = {
+      'name': debtor.name,
+      'phone': debtor.phonenumber,
+    };
     return ListTile(
       onTap: () {
-        Navigator.of(context).push(CupertinoPageRoute(
-          builder: (context) => const DetailScreen(),
-        ));
+        Navigator.of(context).push(
+          CupertinoPageRoute(
+            builder: (context) => DetailScreen(
+              debtor: debtor,
+            ),
+          ),
+        );
       },
       title: Text(
-        'Name',
+        debtor.name,
         style: GoogleFonts.nunito(fontSize: 18),
       ),
       subtitle: Text(
-        'phonumber',
+        debtor.phonenumber,
         style: GoogleFonts.nunito(fontSize: 17),
       ),
       trailing: Row(
@@ -98,7 +220,7 @@ class DebtorTile extends StatelessWidget {
           Ink(
             child: InkWell(
               borderRadius: BorderRadius.circular(100),
-              onTap: () => print("SEARCH"),
+              onLongPress: () => _showUpdateDialog(context),
               child: const Padding(
                 padding: EdgeInsets.all(5.0),
                 child: Icon(
@@ -115,7 +237,7 @@ class DebtorTile extends StatelessWidget {
           Ink(
             child: InkWell(
               borderRadius: BorderRadius.circular(100),
-              onTap: () => _showDeleteDialog(context),
+              onLongPress: () => _showDeleteDialog(context),
               child: const Padding(
                 padding: EdgeInsets.all(5.0),
                 child: Icon(

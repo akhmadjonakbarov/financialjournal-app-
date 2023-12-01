@@ -1,6 +1,6 @@
-import 'package:financialjournal_app/app/authentication/screens/login/login_screen.dart';
-import 'package:financialjournal_app/app/authentication/screens/register/register_screen.dart';
-import 'package:financialjournal_app/app/authentication/widgets/auth_button.dart';
+import 'screens/login/login_screen.dart';
+import 'screens/register/register_screen.dart';
+import 'widgets/auth_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -67,8 +67,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                   ),
                   Padding(
                     padding: EdgeInsets.only(
-                      top: MediaQuery.sizeOf(context).height * 0.05,
-                      bottom: MediaQuery.sizeOf(context).height * 0.02,
+                      top: MediaQuery.sizeOf(context).height * 0.02,
+                      bottom: MediaQuery.sizeOf(context).height * 0.01,
                     ),
                     child: Text(
                       'Smart Finances',
@@ -80,7 +80,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                     style: GoogleFonts.roboto(fontSize: 16),
                   ),
                   Container(
-                    margin: EdgeInsets.only(top: MediaQuery.sizeOf(context).height * 0.06),
+                    margin: EdgeInsets.only(top: MediaQuery.sizeOf(context).height * 0.05),
                     child: Column(
                       children: [
                         AuthButton(

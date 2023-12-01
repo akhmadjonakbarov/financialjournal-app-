@@ -1,4 +1,4 @@
-import 'package:financialjournal_app/utils/money_formatter.dart';
+import '../../../utils/money_formatter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

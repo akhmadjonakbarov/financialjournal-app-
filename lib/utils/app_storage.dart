@@ -1,6 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class AppStorage {
+class SecureAppStorage {
   final FlutterSecureStorage storage = const FlutterSecureStorage();
 
   Future<bool> hasToken() async {
@@ -12,17 +14,18 @@ class AppStorage {
     }
   }
 
-  Future<void> writeTokens({
-    required String accessToken,
-    required String refreshToken,
-  }) async {
+  Future writeAccessToken({required String token}) async {
     await storage.write(
       key: 'accessToken',
-      value: accessToken,
+      value: token,
     );
+    log("AccessToken was written");
+  }
+
+  Future writeRefreshToken({required String token}) async {
     await storage.write(
       key: 'refreshToken',
-      value: refreshToken,
+      value: token,
     );
   }
 

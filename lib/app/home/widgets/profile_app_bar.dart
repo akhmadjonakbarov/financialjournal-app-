@@ -2,19 +2,23 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../contants/app_sizes.dart';
+import '../../authentication/models/user_model.dart';
+
 class ProfileAppBar extends StatelessWidget {
   const ProfileAppBar({
     super.key,
     required this.time,
+    required this.user,
   });
-
+  final UserModel user;
   final String time;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15),
-      height: 60,
+      height: AppSizes.HEIGHT60,
       decoration: const BoxDecoration(
         color: Colors.black,
         borderRadius: BorderRadius.only(
@@ -40,7 +44,7 @@ class ProfileAppBar extends StatelessWidget {
                 width: 10,
               ),
               Text(
-                '$time User!',
+                '$time ${user.name}!',
                 style: GoogleFonts.lato(fontSize: 20, color: Colors.white),
               ),
             ],

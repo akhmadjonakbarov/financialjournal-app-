@@ -1,9 +1,12 @@
 // ignore_for_file: avoid_print
 
-import 'package:flutter/material.dart';
+import 'dart:developer';
 
-import 'package:google_fonts/google_fonts.dart';
+import 'package:financialjournal_app/app/authentication/controllers/authentication_bloc/authentication_bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,7 +18,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _loginFormKey = GlobalKey<FormState>();
   Map<String, dynamic> loginData = {
-    'username': '',
+    'phone': '',
     'password': '',
   };
 
@@ -31,9 +34,12 @@ class _LoginScreenState extends State<LoginScreen> {
     bool isValid = _loginFormKey.currentState!.validate();
     if (!isValid) return;
     _loginFormKey.currentState!.save();
-    print(loginData);
 
-    // login bloc
+    context.read<AuthenticationBloc>().add(LoginEvent(
+          username: loginData['phone'],
+          password: loginData['password'],
+        ));
+    Navigator.of(context).pop();
   }
 
   void showPassword() {
@@ -44,6 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    log("login screen");
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(
@@ -80,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ],
                           onSaved: (value) {
                             setState(() {
-                              loginData['username'] = value!.replaceAll(' ', '');
+                              loginData['phone'] = value!.replaceAll(' ', '');
                             });
                           },
                           validator: (value) {
@@ -111,8 +118,6 @@ class _LoginScreenState extends State<LoginScreen> {
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'Iltimos parol kiriting!';
-                                } else if (value.length <= 6) {
-                                  return 'Parol mos kelmadi';
                                 }
                                 return null;
                               },
