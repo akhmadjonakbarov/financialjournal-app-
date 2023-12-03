@@ -52,7 +52,6 @@ class MyApp extends StatelessWidget {
         home: BlocConsumer<AuthenticationBloc, AuthenticationState>(
           listener: (context, state) {
             if (state is AuthenticationErrorState) {
-              print(state.errorMessage);
               showDialog(
                 context: context,
                 builder: (context) {
@@ -77,6 +76,29 @@ class MyApp extends StatelessWidget {
                     ),
                   );
                 },
+              );
+            } else if (state is AuthUnAvailableInternet) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      topRight: Radius.circular(16),
+                    ),
+                  ),
+                  duration: const Duration(seconds: 3),
+                  backgroundColor: Theme.of(context).errorColor,
+                  content: Container(
+                    decoration: const BoxDecoration(),
+                    height: 60,
+                    child: Text(
+                      "Internet mavjud emas!\nIltimos internetni yoqing!",
+                      style: GoogleFonts.nunito(
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
               );
             }
           },

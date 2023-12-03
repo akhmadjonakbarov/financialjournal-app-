@@ -6,11 +6,15 @@ import '../../../contants/app_sizes.dart';
 import '../../authentication/models/user_model.dart';
 
 class ProfileAppBar extends StatelessWidget {
-  const ProfileAppBar({
+  Function()? onTap;
+
+  ProfileAppBar({
     super.key,
     required this.time,
     required this.user,
+    this.onTap,
   });
+
   final UserModel user;
   final String time;
 
@@ -21,10 +25,6 @@ class ProfileAppBar extends StatelessWidget {
       height: AppSizes.HEIGHT60,
       decoration: const BoxDecoration(
         color: Colors.black,
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(16),
-          bottomRight: Radius.circular(16),
-        ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -33,15 +33,17 @@ class ProfileAppBar extends StatelessWidget {
             children: [
               Ink(
                 child: InkWell(
-                  onTap: () => print('PROFILE'),
-                  child: const CircleAvatar(
-                    backgroundColor: Colors.red,
-                    child: Icon(Icons.person),
+                  onTap: () {
+                    onTap!();
+                  },
+                  child: Icon(
+                    CupertinoIcons.line_horizontal_3,
+                    color: Colors.white,
                   ),
                 ),
               ),
               const SizedBox(
-                width: 10,
+                width: 25,
               ),
               Text(
                 '$time ${user.name}!',

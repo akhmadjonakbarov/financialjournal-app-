@@ -1,5 +1,8 @@
 // ignore_for_file: avoid_print
 
+import 'dart:async';
+
+import 'package:financialjournal_app/app/home/widgets/custom_drawer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,6 +30,9 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isFirstInit = true;
   UserModel? user;
 
+  // flutter variables
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   void didChangeDependencies() {
     if (isFirstInit) {
@@ -49,15 +55,27 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void _openDrawer() {
+    _scaffoldKey.currentState?.openDrawer();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      drawer: CustomDrawer(),
       body: SafeArea(
         child: Column(
           children: [
             BlocBuilder<UserBloc, UserState>(
               builder: (context, state) {
-                return state.user != null ? ProfileAppBar(time: time, user: state.user!) : const SizedBox.shrink();
+                return state.user != null
+                    ? ProfileAppBar(
+                        time: time,
+                        user: state.user!,
+                        onTap: _openDrawer,
+                      )
+                    : const SizedBox.shrink();
               },
             ),
             BlocConsumer<DebtorBloc, DebtorState>(
@@ -78,14 +96,17 @@ class _HomeScreenState extends State<HomeScreen> {
               builder: (context, state) {
                 if (state.status.isInProgress) {
                   return Padding(
-                    padding: EdgeInsets.symmetric(vertical: MediaQuery.sizeOf(context).height * 0.4),
+                    padding: EdgeInsets.symmetric(
+                        vertical: MediaQuery.sizeOf(context).height * 0.4),
                     child: const CircularProgressIndicator(),
                   );
                 } else if (state.status.isSuccess) {
                   return state.debtors.isNotEmpty
                       ? DebtorList(debtors: state.debtors)
                       : Padding(
-                          padding: EdgeInsets.symmetric(vertical: MediaQuery.sizeOf(context).height * 0.4),
+                          padding: EdgeInsets.symmetric(
+                              vertical:
+                                  MediaQuery.sizeOf(context).height * 0.4),
                           child: Text(
                             "Ma'lumotlar mavjud emas!",
                             style: GoogleFonts.nunito(

@@ -1,18 +1,23 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
 
+import '../../../../../utils/connectivity_service.dart';
 import '../../../models/debtor_model.dart';
 import '../../repositories/debtor_repository.dart';
 import '../../services/debtor_service.dart';
 
 part 'debtor_event.dart';
+
 part 'debtor_state.dart';
 
 class DebtorBloc extends Bloc<DebtorEvent, DebtorState> {
   GetDebtorRepository getDebtorRepository = GetDebtorRepository(
     GetDebtorService(),
   );
+
   DebtorBloc() : super(DebtorState()) {
     on<DebtorGetEvent>(_getDebtor);
     on<DebtorAddEvent>(_addDebtor);
@@ -20,8 +25,14 @@ class DebtorBloc extends Bloc<DebtorEvent, DebtorState> {
     on<DebtorDeleteEvent>(_deleteDebtor);
   }
 
+  final ConnectivityService _connectivityService = ConnectivityService();
+  final _connectionController = StreamController<bool>.broadcast();
+
+  Stream<bool> get connectionStream => _connectionController.stream;
+
   _getDebtor(DebtorGetEvent event, Emitter<DebtorState> emit) async {
     List<DebtorModel> debtors = [];
+    bool isHasInternet = await _connectivityService.checkConnection();
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
     try {
       debtors = await getDebtorRepository.getDebtor() as List<DebtorModel>;
@@ -51,7 +62,8 @@ class DebtorBloc extends Bloc<DebtorEvent, DebtorState> {
         status: 1,
       );
       debtors = await getDebtorRepository.getDebtor();
-      emit(state.copyWith(debtors: debtors, status: FormzSubmissionStatus.success));
+      emit(state.copyWith(
+          debtors: debtors, status: FormzSubmissionStatus.success));
     } catch (e) {
       emit(state.copyWith(
         errorMessage: e.toString(),

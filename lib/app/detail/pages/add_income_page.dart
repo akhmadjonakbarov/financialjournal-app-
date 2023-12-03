@@ -1,8 +1,9 @@
 import 'package:financialjournal_app/utils/calculator/calculator.dart';
+import 'package:financialjournal_app/utils/custom_date_formatter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
+
 
 enum Currency { USD, UZS }
 
@@ -123,9 +124,7 @@ class _AddIncomePageState extends State<AddIncomePage> {
                       child: InkWell(
                         onTap: () => _selectDateAndTime(),
                         child: Text(
-                          "${DateFormat("dd-MM-y").format(
-                            selectedDate.toLocal(),
-                          )} ${selectedTime.format(context)}",
+                          "${dateFormatter(selectedDate)} ${selectedTime.format(context)}",
                           style: GoogleFonts.nunito(
                             fontSize: 20,
                             fontWeight: FontWeight.w700,

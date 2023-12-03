@@ -1,6 +1,8 @@
 import 'dart:developer';
 
+
 import 'package:bloc/bloc.dart';
+import 'package:financialjournal_app/utils/connectivity_service.dart';
 import '../repository/auth_repository.dart';
 import '../services/auth_service.dart';
 import '../../../../utils/app_storage.dart';
@@ -9,13 +11,17 @@ import 'package:meta/meta.dart';
 import '../../models/user_model.dart';
 
 part 'authentication_event.dart';
+
 part 'authentication_state.dart';
 
-class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
+class AuthenticationBloc
+    extends Bloc<AuthenticationEvent, AuthenticationState> {
   final AppAuthRepository _appAuthRepository = AppAuthRepository(
     AppAuthService(),
   );
   final SecureAppStorage secureAppStorage = SecureAppStorage();
+  final ConnectivityService _connectivityService = ConnectivityService();
+
   AuthenticationBloc() : super(AuthenticationInitialState()) {
     on<AppStartEvent>(_appStarted);
     on<LoginEvent>(_login);
@@ -28,21 +34,27 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   ) async {
     UserModel? user;
     emit(AuthenticatingState());
-    try {
-      bool hasToken = await secureAppStorage.hasToken();
-      if (hasToken) {
-        user = await _appAuthRepository.profile();
-        emit(AuthenticatedState(user: user));
-      } else {
-        emit(UnAuthenticatedState());
+    bool isHasInternet = await _connectivityService.checkConnection();
+
+    if (isHasInternet) {
+      try {
+        bool hasToken = await secureAppStorage.hasToken();
+        if (hasToken) {
+          user = await _appAuthRepository.profile();
+          emit(AuthenticatedState(user: user));
+        } else {
+          emit(UnAuthenticatedState());
+        }
+        log("_appStart");
+      } catch (e) {
+        if (e.toString().contains("Token is invalid or expired")) {
+          emit(UnAuthenticatedState());
+        } else {
+          emit(AuthenticationErrorState(errorMessage: e.toString()));
+        }
       }
-      log("_appStart");
-    } catch (e) {
-      if (e.toString().contains("Token is invalid or expired")) {
-        emit(UnAuthenticatedState());
-      } else {
-        emit(AuthenticationErrorState(errorMessage: e.toString()));
-      }
+    } else {
+      emit(AuthUnAvailableInternet());
     }
   }
 

@@ -1,5 +1,4 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
 
 import 'package:dio/dio.dart';
 
@@ -10,22 +9,26 @@ import '../../models/debtor_model.dart';
 
 abstract class DebtorService {
   Future getDebtor();
+
   Future addDebtor({
     required String name,
     required String phone,
     required int status,
   });
+
   Future updateDebtor({
     required int debtorId,
     required String newName,
     required String newPhone,
   });
+
   Future deleteDebtor({required int debtorId});
 }
 
 class GetDebtorService implements DebtorService {
   final Dio _dio = serviceLocator<DioSettings>().dio;
   final String _debtorURL = "/api/debtor";
+
   @override
   Future getDebtor() async {
     List<DebtorModel> debtors = [];
@@ -68,8 +71,12 @@ class AddDebtorService extends DebtorService {
   final Dio _dio = serviceLocator<DioSettings>().dio;
 
   final String _addDebtorURL = "/api/debtor/create";
+
   @override
-  Future addDebtor({required String name, required String phone, required int status}) async {
+  Future addDebtor(
+      {required String name,
+      required String phone,
+      required int status}) async {
     SecureAppStorage appStorage = SecureAppStorage();
     String? accessToken = await appStorage.getAccessToken();
 

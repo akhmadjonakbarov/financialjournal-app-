@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../home/models/debtor_model.dart';
 
-import '../home/widgets/custom_app_bar.dart';
+import 'widgets/custom_app_bar.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -30,15 +30,16 @@ class _DetailScreenState extends State<DetailScreen> {
           child: Column(
             children: [
               CustomAppBar(
-                debtor: widget.debtor,
+                text: widget.debtor.name,
+                isBackButton: true,
               ),
               Container(
-                margin: EdgeInsets.symmetric(vertical: 5),
+                margin: const EdgeInsets.symmetric(vertical: 5),
                 height: 70,
                 child: LayoutBuilder(
                   builder: (context, constraints) {
                     return TabBar(
-                      padding: EdgeInsets.symmetric(horizontal: 5),
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
                       labelStyle: GoogleFonts.nunito(
                         color: Colors.white,
                         fontSize: 18,
@@ -51,7 +52,6 @@ class _DetailScreenState extends State<DetailScreen> {
                       unselectedLabelColor: Colors.black,
                       splashBorderRadius: BorderRadius.circular(10),
                       indicatorSize: TabBarIndicatorSize.tab,
-
                       tabs: const [
                         Tab(
                           icon: Icon(

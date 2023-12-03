@@ -23,7 +23,7 @@ class Calculator extends StatefulWidget {
 }
 
 class _CalculatorState extends State<Calculator> {
-  TextEditingController _expressionController = TextEditingController();
+  final TextEditingController _expressionController = TextEditingController();
 
   String _summa = '';
 
@@ -93,7 +93,7 @@ class _CalculatorState extends State<Calculator> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Text(
                     _summa,
                     style: GoogleFonts.nunito(
@@ -101,7 +101,7 @@ class _CalculatorState extends State<Calculator> {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 5,
                 ),
                 TextField(
@@ -126,8 +126,8 @@ class _CalculatorState extends State<Calculator> {
           ),
           Expanded(
             child: GridView.builder(
-              padding: EdgeInsets.only(bottom: 10),
-              physics: NeverScrollableScrollPhysics(),
+              padding: const EdgeInsets.only(bottom: 10),
+              physics: const NeverScrollableScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
                 crossAxisSpacing: 5,

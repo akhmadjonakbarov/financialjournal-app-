@@ -5,6 +5,7 @@ class DebtorState extends Equatable {
   final FormzSubmissionStatus status;
   final List<DebtorModel> debtors;
   final String errorMessage;
+
   DebtorState({
     this.status = FormzSubmissionStatus.initial,
     this.debtors = const [],
@@ -26,3 +27,5 @@ class DebtorState extends Equatable {
     );
   }
 }
+
+
