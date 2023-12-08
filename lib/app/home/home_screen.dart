@@ -1,7 +1,5 @@
 // ignore_for_file: avoid_print
 
-import 'dart:async';
-
 import 'package:financialjournal_app/app/home/widgets/custom_drawer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +9,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../utils/check_time.dart';
 import '../authentication/models/user_model.dart';
-import '../common/blocs/user/user_bloc.dart';
+
+import '../common/controllers/blocs/user/user_bloc.dart';
 import 'controllers/blocs/debtor/debtor_bloc.dart';
 import 'widgets/add_bottom_window.dart';
 import 'widgets/debtor_list.dart';
@@ -63,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      drawer: CustomDrawer(),
+      drawer: const CustomDrawer(),
       body: SafeArea(
         child: Column(
           children: [
@@ -96,17 +95,14 @@ class _HomeScreenState extends State<HomeScreen> {
               builder: (context, state) {
                 if (state.status.isInProgress) {
                   return Padding(
-                    padding: EdgeInsets.symmetric(
-                        vertical: MediaQuery.sizeOf(context).height * 0.4),
+                    padding: EdgeInsets.symmetric(vertical: MediaQuery.sizeOf(context).height * 0.4),
                     child: const CircularProgressIndicator(),
                   );
                 } else if (state.status.isSuccess) {
                   return state.debtors.isNotEmpty
                       ? DebtorList(debtors: state.debtors)
                       : Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical:
-                                  MediaQuery.sizeOf(context).height * 0.4),
+                          padding: EdgeInsets.symmetric(vertical: MediaQuery.sizeOf(context).height * 0.4),
                           child: Text(
                             "Ma'lumotlar mavjud emas!",
                             style: GoogleFonts.nunito(

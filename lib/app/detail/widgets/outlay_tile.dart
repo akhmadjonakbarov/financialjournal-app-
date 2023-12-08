@@ -1,3 +1,5 @@
+import 'package:financialjournal_app/app/detail/pages/models/Income_model.dart';
+
 import '../../../utils/money_formatter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,9 +7,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 class OutlayTile extends StatelessWidget {
-  OutlayTile({
-    super.key,
-  });
+  final IncomeModel outlay;
+  OutlayTile({super.key, required this.outlay});
 
   final MoneyFormatter moneyFormatter = MoneyFormatter();
 
@@ -56,7 +57,7 @@ class OutlayTile extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                '${moneyFormatter.formatter(data: 20000)} UZS',
+                '${moneyFormatter.formatter(data: outlay.money)} UZS',
                 style: GoogleFonts.nunito(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -64,14 +65,14 @@ class OutlayTile extends StatelessWidget {
               ),
               Text(
                 DateFormat("HH:MM / dd-MM-y").format(
-                  DateTime.now(),
+                  outlay.dateTime,
                 ),
                 style: GoogleFonts.nunito(
                   fontSize: 16,
                 ),
               ),
             ],
-          )
+          ),
         ],
       ),
     );

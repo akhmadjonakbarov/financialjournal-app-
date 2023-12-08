@@ -6,10 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
+import '../pages/models/Income_model.dart';
+
 class IncomeTile extends StatefulWidget {
-  IncomeTile({
-    super.key,
-  });
+  final IncomeModel income;
+  const IncomeTile({super.key, required this.income});
 
   @override
   State<IncomeTile> createState() => _IncomeTileState();
@@ -213,16 +214,14 @@ class _IncomeTileState extends State<IncomeTile> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    '${moneyFormatter.formatter(data: 20000)} UZS',
+                    '${moneyFormatter.formatter(data: widget.income.money)} UZS',
                     style: GoogleFonts.nunito(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
-                    DateFormat("HH:MM / dd-MM-y").format(
-                      DateTime.now(),
-                    ),
+                    DateFormat("HH:MM / dd-MM-y").format(widget.income.dateTime),
                     style: GoogleFonts.nunito(
                       fontSize: 16,
                     ),

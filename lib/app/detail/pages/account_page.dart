@@ -2,18 +2,33 @@ import 'package:financialjournal_app/app/detail/pages/widgets/show_account.dart'
 import 'package:financialjournal_app/app/home/models/debtor_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:formz/formz.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../utils/money_formatter.dart';
 import '../widgets/incomes_list.dart';
 import '../widgets/outlays_list.dart';
+import 'controllers/blocs/income_or_outlay_bloc.dart';
 
-class AccountPage extends StatelessWidget {
-  DebtorModel debtor;
+class AccountPage extends StatefulWidget {
+  final DebtorModel debtor;
 
-  AccountPage({super.key, required this.debtor});
+  const AccountPage({super.key, required this.debtor});
 
+  @override
+  State<AccountPage> createState() => _AccountPageState();
+}
+
+class _AccountPageState extends State<AccountPage> {
   MoneyFormatter moneyFormatter = MoneyFormatter();
+
+  @override
+  void didChangeDependencies() {
+    context.read<IncomeOrOutlayBloc>().add(OutlayGetEvent(debtorId: widget.debtor.id));
+    context.read<IncomeOrOutlayBloc>().add(IncomeGetEvent(debtorId: widget.debtor.id));
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +56,6 @@ class AccountPage extends StatelessWidget {
                           // Creates border
                           color: Colors.black,
                         ),
-
                         unselectedLabelColor: Colors.black,
                         splashBorderRadius: BorderRadius.circular(10),
                         indicatorSize: TabBarIndicatorSize.tab,
@@ -130,8 +144,56 @@ class AccountPage extends StatelessWidget {
                       Expanded(
                         child: TabBarView(
                           children: [
-                            IncomesList(),
-                            OutlaysList(),
+                            BlocBuilder<IncomeOrOutlayBloc, IncomeOrOutlayState>(
+                              builder: (context, state) {
+                                if (state.status == FormzSubmissionStatus.inProgress) {
+                                  return const Align(
+                                    alignment: Alignment.center,
+                                    child: CircularProgressIndicator(),
+                                  );
+                                } else if (state.status == FormzSubmissionStatus.success) {
+                                  return state.incomes.isNotEmpty
+                                      ? IncomesList(incomes: state.incomes)
+                                      : Align(
+                                          child: Text(
+                                            "Ma'lumotlar mavjud emas!",
+                                            style: GoogleFonts.nunito(
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        );
+                                } else {
+                                  return Container();
+                                }
+                              },
+                            ),
+                            BlocBuilder<IncomeOrOutlayBloc, IncomeOrOutlayState>(
+                              builder: (context, state) {
+                                if (state.status == FormzSubmissionStatus.inProgress) {
+                                  return const Align(
+                                    alignment: Alignment.center,
+                                    child: CircularProgressIndicator(),
+                                  );
+                                } else if (state.status == FormzSubmissionStatus.success) {
+                                  return state.outlays.isNotEmpty
+                                      ? OutlaysList(
+                                          outlays: state.outlays,
+                                        )
+                                      : Align(
+                                          child: Text(
+                                            "Ma'lumotlar mavjud emas!",
+                                            style: GoogleFonts.nunito(
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        );
+                                } else {
+                                  return Container();
+                                }
+                              },
+                            )
                           ],
                         ),
                       )

@@ -1,6 +1,9 @@
 import 'package:alice/alice.dart';
+import 'package:financialjournal_app/app/common/controllers/blocs/kurs/kurs_bloc.dart';
+import 'package:financialjournal_app/app/detail/pages/controllers/blocs/income_or_outlay_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'app/authentication/authentication_screen.dart';
+import 'app/common/controllers/blocs/user/user_bloc.dart';
 import 'app/home/controllers/blocs/debtor/debtor_bloc.dart';
 import 'utils/service_locator.dart/service_locator.dart';
 
@@ -8,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'app/authentication/controllers/authentication_bloc/authentication_bloc.dart';
-import 'app/common/blocs/user/user_bloc.dart';
+
 import 'app/home/home_screen.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
@@ -45,6 +48,12 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => DebtorBloc(),
         ),
+        BlocProvider(
+          create: (context) => KursBloc(),
+        ),
+        BlocProvider(
+          create: (context) => IncomeOrOutlayBloc(),
+        )
       ],
       child: MaterialApp(
         navigatorKey: alice.getNavigatorKey(),

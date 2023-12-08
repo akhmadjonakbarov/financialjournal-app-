@@ -9,19 +9,16 @@ import '../../models/debtor_model.dart';
 
 abstract class DebtorService {
   Future getDebtor();
-
   Future addDebtor({
     required String name,
     required String phone,
     required int status,
   });
-
   Future updateDebtor({
     required int debtorId,
     required String newName,
     required String newPhone,
   });
-
   Future deleteDebtor({required int debtorId});
 }
 
@@ -73,15 +70,12 @@ class AddDebtorService extends DebtorService {
   final String _addDebtorURL = "/api/debtor/create";
 
   @override
-  Future addDebtor(
-      {required String name,
-      required String phone,
-      required int status}) async {
+  Future addDebtor({required String name, required String phone, required int status}) async {
     SecureAppStorage appStorage = SecureAppStorage();
     String? accessToken = await appStorage.getAccessToken();
 
     try {
-      Response response = await _dio.post(
+      await _dio.post(
         "$_addDebtorURL?name=$name&phone=$phone&status=$status",
         options: Options(
           headers: {

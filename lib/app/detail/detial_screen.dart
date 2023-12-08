@@ -1,11 +1,10 @@
-import 'package:financialjournal_app/app/detail/pages/account_page.dart';
-import 'package:financialjournal_app/app/detail/pages/add_income_page.dart';
-import 'package:financialjournal_app/app/detail/pages/add_outlay_page.dart';
-
 import 'package:google_fonts/google_fonts.dart';
 
 import '../home/models/debtor_model.dart';
 
+import 'pages/account_page.dart';
+import 'pages/add_income_page.dart';
+import 'pages/add_outlay_page.dart';
 import 'widgets/custom_app_bar.dart';
 
 import 'package:flutter/cupertino.dart';
@@ -21,6 +20,11 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -80,8 +84,8 @@ class _DetailScreenState extends State<DetailScreen> {
                 child: TabBarView(
                   children: [
                     AccountPage(debtor: widget.debtor),
-                    AddIncomePage(),
-                    AddOutlayPage(),
+                    AddIncomePage(debtor: widget.debtor),
+                    AddOutlayPage(debtor: widget.debtor),
                   ],
                 ),
               )

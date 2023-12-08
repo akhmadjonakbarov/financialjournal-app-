@@ -1,14 +1,11 @@
-import 'package:financialjournal_app/app/home/models/debtor_model.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CustomAppBar extends StatelessWidget {
-  bool isBackButton;
+  final bool isBackButton;
   final String text;
 
-
-  CustomAppBar({
+  const CustomAppBar({
     super.key,
     this.isBackButton = false,
     required this.text,
