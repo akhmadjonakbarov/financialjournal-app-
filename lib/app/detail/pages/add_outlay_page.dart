@@ -1,3 +1,4 @@
+import 'package:financialjournal_app/app/home/models/debtor_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,7 +7,8 @@ import 'package:intl/intl.dart';
 import '../../../utils/calculator/calculator.dart';
 
 class AddOutlayPage extends StatefulWidget {
-  const AddOutlayPage({super.key});
+  DebtorModel? debtor;
+  AddOutlayPage({super.key, this.debtor});
 
   @override
   State<AddOutlayPage> createState() => _AddOutlayPageState();
@@ -35,8 +37,8 @@ class _AddOutlayPageState extends State<AddOutlayPage> {
 
       if (pickedTime != null) {
         setState(() {
-          selectedDate = DateTime(pickedDate.year, pickedDate.month,
-              pickedDate.day, pickedTime.hour, pickedTime.minute);
+          selectedDate =
+              DateTime(pickedDate.year, pickedDate.month, pickedDate.day, pickedTime.hour, pickedTime.minute);
           selectedTime = pickedTime;
         });
       }
@@ -86,7 +88,7 @@ class _AddOutlayPageState extends State<AddOutlayPage> {
                     )
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 5,
                 ),
                 Row(
