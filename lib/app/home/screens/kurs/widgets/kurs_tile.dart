@@ -1,16 +1,21 @@
+import 'package:financialjournal_app/app/common/models/kurs_model.dart';
+import 'package:financialjournal_app/utils/money_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 
 import '../../../../../utils/custom_date_formatter.dart';
 
 class KursTile extends StatelessWidget {
-  const KursTile({
-    super.key,
-  });
+  final KursModel kurs;
+
+  KursTile({super.key, required this.kurs});
+
+  MoneyFormatter moneyFormatter = MoneyFormatter();
+  String formattedKurs = '';
 
   @override
   Widget build(BuildContext context) {
+    formattedKurs = moneyFormatter.formatter(data: kurs.currency).toString();
     return Container(
       padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
@@ -30,7 +35,7 @@ class KursTile extends StatelessWidget {
                 style: GoogleFonts.nunito(fontSize: 22),
               ),
               Text(
-                '1 USD = 12355 UZS',
+                "1 USD = $formattedKurs UZS",
                 style: GoogleFonts.nunito(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -39,9 +44,7 @@ class KursTile extends StatelessWidget {
             ],
           ),
           Text(
-            dateFormatter(
-              DateTime.now(),
-            ),
+            dateFormatter(kurs.createdAt),
             style: GoogleFonts.nunito(
               fontSize: 17,
               fontWeight: FontWeight.w600,
