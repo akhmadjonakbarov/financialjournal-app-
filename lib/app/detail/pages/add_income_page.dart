@@ -25,11 +25,11 @@ class _AddIncomePageState extends State<AddIncomePage> {
   Map<String, dynamic> incomeAddingData = {
     'money': '',
     'expression_history': '',
-    'currency_convert': '',
-    'currency_id': '',
+    'currency_convert': 0,
+    'currency_id': 0,
     'status': 0,
-    'debtor_id': -1,
-    'date': ''
+    'debtor_id': 0,
+    'date': DateTime.now()
   };
 
   @override
@@ -54,28 +54,13 @@ class _AddIncomePageState extends State<AddIncomePage> {
         incomeAddingData['date'] = selectedDate;
       }
     }
-
-    // if (pickedDate != null && pickedDate != selectedDate) {
-    //   // final TimeOfDay? pickedTime = await showTimePicker(
-    //   //   context: context,
-    //   //   initialTime: selectedTime!,
-    //   // );
-
-    //   if (pickedTime != null) {
-    //     setState(() {
-    //       selectedDate =
-    //           DateTime(pickedDate.year, pickedDate.month, pickedDate.day, pickedTime.hour, pickedTime.minute);
-    //       selectedTime = pickedTime;
-    //     });
-    //   }
-    // }
   }
 
   void getSumma(String summa) {
     if (summa.isNotEmpty) {
       setState(() {
         expressionSum = summa;
-        incomeAddingData['money'] = summa;
+        incomeAddingData['money'] = double.parse(expressionSum);
       });
     }
   }
@@ -91,15 +76,22 @@ class _AddIncomePageState extends State<AddIncomePage> {
 
   void isConverted(bool isConverted) {
     if (isConverted) {
-      incomeAddingData['currency_convert'] = '';
-    } else {
-      incomeAddingData['currency_convert'] = 0;
-      incomeAddingData['currency_id'] = 0;
+      incomeAddingData['currency_convert'] = 1;
     }
   }
 
   void _save() {
-    // context.read<IncomeOrOutlayBloc>().add();
+    context.read<IncomeOrOutlayBloc>().add(
+          IncomeAddEvent(
+            debtorId: incomeAddingData['debtor_id'],
+            currencyId: incomeAddingData['currency_id'],
+            currencyConvert: incomeAddingData['currency_convert'],
+            expressionHistory: incomeAddingData['expression_history'],
+            money: incomeAddingData['money'],
+            dateTime: incomeAddingData['date'],
+            status: 0,
+          ),
+        );
   }
 
   @override
@@ -231,6 +223,7 @@ class _AddIncomePageState extends State<AddIncomePage> {
                               value: false,
                               groupValue: isUZS,
                               onChanged: (value) {
+                                isConverted(true);
                                 setState(() {
                                   isUZS = value!;
                                 });
