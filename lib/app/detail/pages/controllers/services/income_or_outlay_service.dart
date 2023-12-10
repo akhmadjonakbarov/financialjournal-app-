@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
-import 'package:financialjournal_app/app/detail/pages/models/Income_model.dart';
 
 import '../../../../../utils/dio/dio_settings.dart';
 import '../../../../../utils/generate_auth.dart';
 import '../../../../../utils/service_locator.dart/service_locator.dart';
+import '../../models/income_model.dart';
 
 abstract class IncomeOrOutlayService {
   final Dio _dio = serviceLocator<DioSettings>().dio;
@@ -13,7 +13,15 @@ abstract class IncomeOrOutlayService {
 
   Future<List<IncomeModel>> getIncomeOrOutlay({required int debtorId, required bool isIncome});
 
-  Future addIncomeOrOutlay();
+  Future addIncomeOrOutlay({
+    required int debtorId,
+    required int currencyId,
+    required int currencyConvert,
+    required String expressionHistory,
+    required double money,
+    required int status,
+    required DateTime dateTime,
+  });
 
   Future updateIncomeOrOutlay();
 
@@ -26,8 +34,6 @@ class GetIncomeOrOutlayService extends IncomeOrOutlayService {
   @override
   Future<List<IncomeModel>> getIncomeOrOutlay({required int debtorId, required bool isIncome}) async {
     List<IncomeModel> incomes = [];
-    IncomeModel income;
-    IncomeModel outlay;
     List<IncomeModel> outlays = [];
     GenerateAuth generateAuth = GenerateAuth();
     _auth = await generateAuth.auth();
@@ -44,37 +50,25 @@ class GetIncomeOrOutlayService extends IncomeOrOutlayService {
         if (response.statusCode == 200) {
           if (response.data['data'] != []) {
             for (var element in response.data['data']) {
+              IncomeModel model = IncomeModel(
+                id: element['id'],
+                debtorId: element['debtor_id'],
+                currencyId: int.parse(element['currency_id'].toString()),
+                money: double.parse(element['money'].toString()),
+                expressionHistory: element['expression_history'],
+                status: int.parse(element['status'].toString()),
+                currencyConvert: int.parse(element['currency_convert'].toString()),
+                dateTime: DateTime.parse(element['date']),
+              );
+
               if (element['status'] == "0") {
-                income = IncomeModel(
-                  id: element['id'],
-                  debtorId: element['debtor_id'],
-                  currencyId: int.parse(element['currency_id'].toString()),
-                  money: double.parse(element['money'].toString()),
-                  expressionHistory: element['expression_history'],
-                  status: int.parse(element['status'].toString()),
-                  currencyConvert: int.parse(element['currency_convert'].toString()),
-                  dateTime: DateTime.parse(element['date']),
-                );
-                incomes.add(income);
+                incomes.add(model);
               } else {
-                outlay = IncomeModel(
-                  id: element['id'],
-                  debtorId: element['debtor_id'],
-                  currencyId: int.parse(element['currency_id'].toString()),
-                  money: double.parse(element['money'].toString()),
-                  expressionHistory: element['expression_history'],
-                  status: int.parse(element['status'].toString()),
-                  currencyConvert: int.parse(element['currency_convert'].toString()),
-                  dateTime: DateTime.parse(element['date']),
-                );
-                outlays.add(outlay);
+                outlays.add(model);
               }
             }
-            if (isIncome) {
-              return incomes;
-            } else {
-              return outlays;
-            }
+
+            return isIncome ? incomes : outlays;
           }
         }
         return incomes;
@@ -89,11 +83,40 @@ class GetIncomeOrOutlayService extends IncomeOrOutlayService {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
-class AddIncomeService extends IncomeOrOutlayService {
+class AddIncomeOrOutlayService extends IncomeOrOutlayService {
+  final String _addIncomeURL = "/api/debtor-detail/create";
+
   @override
-  Future addIncomeOrOutlay() {
-    // TODO: implement addIncomeOrOutlay
-    throw UnimplementedError();
+  Future addIncomeOrOutlay({
+    required int debtorId,
+    required int currencyId,
+    required int currencyConvert,
+    required String expressionHistory,
+    required double money,
+    required int status,
+    required DateTime dateTime,
+  }) async {
+    GenerateAuth generateAuth = GenerateAuth();
+    _auth = await generateAuth.auth();
+    try {
+      if (status == 0) {
+        await _dio.post(
+          "$_addIncomeURL?debtor_id=$debtorId&money=$money&status=$status&currency_id=$currencyId&date=$dateTime&expression_history=$expressionHistory&currency_convert=$currencyConvert",
+          options: Options(
+            headers: _auth,
+          ),
+        );
+      } else {
+        await _dio.post(
+          "$_addIncomeURL?debtor_id=$debtorId&money=$money&status=$status&currency_id=$currencyId&date=$dateTime&expression_history=$expressionHistory&currency_convert=$currencyConvert",
+          options: Options(
+            headers: _auth,
+          ),
+        );
+      }
+    } on DioException {
+      rethrow;
+    }
   }
 
   @override

@@ -12,9 +12,9 @@ class KurssGetEvent extends KursEvent {}
 class SingleKursGetEvent extends KursEvent {}
 
 class KursAddEvent extends KursEvent {
-  double kurs;
+  final double kurs;
 
-  KursAddEvent({
+  const KursAddEvent({
     required this.kurs,
   });
 }

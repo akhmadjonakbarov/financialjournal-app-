@@ -1,11 +1,11 @@
 part of 'kurs_bloc.dart';
 
 class KursState extends Equatable {
-  FormzSubmissionStatus status;
-  List<KursModel> kurss;
-  KursModel? kurs;
-  String errorMessage;
-  KursState({
+  final FormzSubmissionStatus status;
+  final List<KursModel> kurss;
+  final KursModel? kurs;
+  final String errorMessage;
+  const KursState({
     this.status = FormzSubmissionStatus.initial,
     this.kurss = const [],
     this.errorMessage = '',

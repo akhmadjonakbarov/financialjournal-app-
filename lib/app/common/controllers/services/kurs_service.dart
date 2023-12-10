@@ -24,7 +24,7 @@ abstract class KursService {
 
 class GetKursService extends KursService {
   final String _getKurssURL = "/api/currency";
-  final String _oneCurrency = "/api/currency/one";
+  final String _oneCurrency = "/api/currency/last";
 
   @override
   Future<List<KursModel>> getKurss() async {
@@ -80,7 +80,7 @@ class GetKursService extends KursService {
           if (resData['data'] != null) {
             kursModel = KursModel(
               id: resData['data']['id'],
-              currency: double.parse(resData['data']['currency']),
+              currency: double.parse(resData['data']['currency'].toString()),
               userId: resData['data']['user_id'],
               createdAt: DateTime.parse(resData['data']['created_at']),
             );

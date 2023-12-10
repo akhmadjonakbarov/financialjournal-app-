@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 part of 'income_or_outlay_bloc.dart';
 
 @immutable
@@ -15,7 +17,7 @@ class OutlayGetEvent extends IncomeOrOutlayEvent {
   OutlayGetEvent({required this.debtorId});
 }
 
-class IncomeAddEvent extends IncomeOrOutlayBloc {
+class IncomeAddEvent extends IncomeOrOutlayEvent {
   final int debtorId;
   final int currencyId;
   final int currencyConvert;

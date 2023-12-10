@@ -14,9 +14,9 @@ class KursBloc extends Bloc<KursEvent, KursState> {
     GetKursService(),
   );
 
-  KursBloc() : super(KursState()) {
+  KursBloc() : super(const KursState()) {
     on<KurssGetEvent>(_getKurss);
-    on<SingleKursGetEvent>(_getSingleKurs);
+    // on<SingleKursGetEvent>(_getSingleKurs);
     on<KursAddEvent>(_addKurs);
   }
 
@@ -32,7 +32,6 @@ class KursBloc extends Bloc<KursEvent, KursState> {
         kurss: kurss,
       ));
     } catch (e) {
-      print(e);
       emit(state.copyWith(
         status: FormzSubmissionStatus.failure,
         errorMessage: e.toString(),
@@ -40,22 +39,14 @@ class KursBloc extends Bloc<KursEvent, KursState> {
     }
   }
 
-  void _getSingleKurs(SingleKursGetEvent event, Emitter<KursState> emit) async {
+  Future<KursModel> getSingleKurs() async {
     KursModel kurs;
-    emit(state.copyWith(
-      status: FormzSubmissionStatus.inProgress,
-    ));
+
     try {
       kurs = await getKurssRepository.getSingleKurs();
-      emit(state.copyWith(
-        status: FormzSubmissionStatus.success,
-        kurs: kurs,
-      ));
+      return kurs;
     } catch (e) {
-      emit(state.copyWith(
-        status: FormzSubmissionStatus.failure,
-        errorMessage: e.toString(),
-      ));
+      rethrow;
     }
   }
 

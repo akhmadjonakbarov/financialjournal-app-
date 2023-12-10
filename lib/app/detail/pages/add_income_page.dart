@@ -1,16 +1,17 @@
-import 'package:financialjournal_app/app/detail/pages/controllers/blocs/income_or_outlay_bloc.dart';
-import 'package:financialjournal_app/app/home/models/debtor_model.dart';
-import 'package:financialjournal_app/utils/calculator/calculator.dart';
-import 'package:financialjournal_app/utils/custom_date_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-enum Currency { USD, UZS }
+import '../../../utils/calculator/calculator.dart';
+import '../../../utils/custom_date_formatter.dart';
+import '../../common/controllers/blocs/kurs/kurs_bloc.dart';
+import '../../common/models/kurs_model.dart';
+import '../../home/models/debtor_model.dart';
+import 'controllers/blocs/income_or_outlay_bloc.dart';
 
 class AddIncomePage extends StatefulWidget {
-  DebtorModel? debtor;
-  AddIncomePage({super.key, this.debtor});
+  final DebtorModel? debtor;
+  const AddIncomePage({super.key, this.debtor});
 
   @override
   State<AddIncomePage> createState() => _AddIncomePageState();
@@ -74,9 +75,15 @@ class _AddIncomePageState extends State<AddIncomePage> {
     }
   }
 
-  void isConverted(bool isConverted) {
+  void isConverted(bool isConverted) async {
+    KursModel kurs;
+    KursBloc kursBloc = KursBloc();
     if (isConverted) {
-      incomeAddingData['currency_convert'] = 1;
+      kurs = await kursBloc.getSingleKurs();
+      setState(() {
+        incomeAddingData['currency_convert'] = 1;
+        incomeAddingData['currency_id'] = kurs.id;
+      });
     }
   }
 
