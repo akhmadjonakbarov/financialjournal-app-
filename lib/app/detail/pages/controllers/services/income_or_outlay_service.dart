@@ -23,9 +23,18 @@ abstract class IncomeOrOutlayService {
     required DateTime dateTime,
   });
 
-  Future updateIncomeOrOutlay();
+  Future updateIncomeOrOutlay({
+    required int id,
+    required int debtorId,
+    required int currencyId,
+    required int currencyConvert,
+    required String expressionHistory,
+    required double money,
+    required int status,
+    required DateTime dateTime,
+  });
 
-  Future deleteIncomeOrOutlay();
+  Future deleteIncomeOrOutlay({required int id});
 }
 
 class GetIncomeOrOutlayService extends IncomeOrOutlayService {
@@ -115,6 +124,63 @@ class AddIncomeOrOutlayService extends IncomeOrOutlayService {
         );
       }
     } on DioException {
+      rethrow;
+    }
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class UpdateIncomeOrOutlayService extends IncomeOrOutlayService {
+  final String _updateIncomeOrOutlayURL = "/api/debtor-detail/update";
+  @override
+  Future updateIncomeOrOutlay({
+    required int id,
+    required int debtorId,
+    required int currencyId,
+    required int currencyConvert,
+    required String expressionHistory,
+    required double money,
+    required int status,
+    required DateTime dateTime,
+  }) async {
+    GenerateAuth generateAuth = GenerateAuth();
+    _auth = await generateAuth.auth();
+    try {
+      if (_auth.isNotEmpty) {
+        await _dio.put(
+          "$_updateIncomeOrOutlayURL/$id?debtor_id=$debtorId&money=$money&status=$status&currency_id=$currencyId&date=$dateTime&expression_history=$expressionHistory&currency_convert=$currencyConvert",
+          options: Options(
+            headers: _auth,
+          ),
+        );
+      }
+    } on DioException {
+      rethrow;
+    }
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class DeleteIncomeOrOutlayService extends IncomeOrOutlayService {
+  final String _deleteIncomeOrOutlayURL = "/api/debtor-detail/delete";
+  @override
+  Future deleteIncomeOrOutlay({required int id}) async {
+    GenerateAuth generateAuth = GenerateAuth();
+    _auth = await generateAuth.auth();
+    try {
+      if (_auth.isNotEmpty) {
+        await _dio.delete(
+          "$_deleteIncomeOrOutlayURL/$id",
+          options: Options(
+            headers: _auth,
+          ),
+        );
+      }
+    } catch (e) {
       rethrow;
     }
   }

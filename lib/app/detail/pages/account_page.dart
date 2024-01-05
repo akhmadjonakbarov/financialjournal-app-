@@ -1,5 +1,5 @@
-import 'package:financialjournal_app/app/detail/pages/widgets/show_account.dart';
-import 'package:financialjournal_app/app/home/models/debtor_model.dart';
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,14 +7,18 @@ import 'package:formz/formz.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../utils/money_formatter.dart';
+
+import '../controllers/blocs/bloc/total_amount_bloc.dart';
 import '../widgets/incomes_list.dart';
 import '../widgets/outlays_list.dart';
 import 'controllers/blocs/income_or_outlay_bloc.dart';
+import 'widgets/show_account.dart';
 
 class AccountPage extends StatefulWidget {
-  final DebtorModel debtor;
+  final int debtorId;
+  String? money;
 
-  const AccountPage({super.key, required this.debtor});
+  AccountPage({Key? key, required this.debtorId, this.money}) : super(key: key);
 
   @override
   State<AccountPage> createState() => _AccountPageState();
@@ -25,9 +29,37 @@ class _AccountPageState extends State<AccountPage> {
 
   @override
   void didChangeDependencies() {
-    context.read<IncomeOrOutlayBloc>().add(OutlayGetEvent(debtorId: widget.debtor.id));
-    context.read<IncomeOrOutlayBloc>().add(IncomeGetEvent(debtorId: widget.debtor.id));
+    final bloc = context.read<IncomeOrOutlayBloc>();
+    bloc.add(OutlayGetEvent(debtorId: widget.debtorId));
+    bloc.add(IncomeGetEvent(debtorId: widget.debtorId));
+    context.read<TotalAmountBloc>().add(
+          GetTotalAmountEvent(
+            debtorId: widget.debtorId,
+          ),
+        );
     super.didChangeDependencies();
+  }
+
+  void deleteTransaction(
+      int transactionId, IncomeOrOutlayState state, bool isIncome) {
+    double summa = 0.0;
+    setState(() {
+      if (isIncome) {
+        state.incomes.removeWhere((element) => element.id == transactionId);
+      } else {
+        state.outlays.removeWhere((element) => element.id == transactionId);
+      }
+    });
+    for (var element in isIncome ? state.incomes : state.outlays) {
+      summa = summa + element.money;
+    }
+    setState(() {
+      if (isIncome) {
+        state.summaK = summa;
+      } else {
+        state.summaCh = summa;
+      }
+    });
   }
 
   @override
@@ -44,7 +76,26 @@ class _AccountPageState extends State<AccountPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ShowAccount(sum_: 450000),
+                      BlocBuilder<TotalAmountBloc, TotalAmountState>(
+                        builder: (context, state) {
+                          if (state.status.isInProgress) {
+                            return const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 60),
+                              child: Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          } else if (state.status.isSuccess) {
+                            return ShowAccount(
+                              sum_: state.account,
+                            );
+                          } else if (state.status.isFailure) {
+                            return Text(state.errorMessage);
+                          } else {
+                            return const SizedBox.shrink();
+                          }
+                        },
+                      ),
                       TabBar(
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         labelStyle: GoogleFonts.nunito(
@@ -53,7 +104,6 @@ class _AccountPageState extends State<AccountPage> {
                         ),
                         indicator: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          // Creates border
                           color: Colors.black,
                         ),
                         unselectedLabelColor: Colors.black,
@@ -84,19 +134,7 @@ class _AccountPageState extends State<AccountPage> {
                                 const SizedBox(
                                   width: 5,
                                 ),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text("Kirimlar"),
-                                    Text(
-                                      "${moneyFormatter.formatter(data: 25000)} UZS",
-                                      style: GoogleFonts.nunito(
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ],
-                                )
+                                const Text("Kirimlar"),
                               ],
                             ),
                           ),
@@ -124,18 +162,7 @@ class _AccountPageState extends State<AccountPage> {
                                 const SizedBox(
                                   width: 5,
                                 ),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Text("Chiqimlar"),
-                                    Text(
-                                      "${moneyFormatter.formatter(data: 25000)} UZS",
-                                      style: GoogleFonts.nunito(
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ],
-                                )
+                                const Text("Chiqimlar"),
                               ],
                             ),
                           ),
@@ -144,56 +171,8 @@ class _AccountPageState extends State<AccountPage> {
                       Expanded(
                         child: TabBarView(
                           children: [
-                            BlocBuilder<IncomeOrOutlayBloc, IncomeOrOutlayState>(
-                              builder: (context, state) {
-                                if (state.status == FormzSubmissionStatus.inProgress) {
-                                  return const Align(
-                                    alignment: Alignment.center,
-                                    child: CircularProgressIndicator(),
-                                  );
-                                } else if (state.status == FormzSubmissionStatus.success) {
-                                  return state.incomes.isNotEmpty
-                                      ? IncomesList(incomes: state.incomes)
-                                      : Align(
-                                          child: Text(
-                                            "Ma'lumotlar mavjud emas!",
-                                            style: GoogleFonts.nunito(
-                                              fontSize: 25,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        );
-                                } else {
-                                  return Container();
-                                }
-                              },
-                            ),
-                            BlocBuilder<IncomeOrOutlayBloc, IncomeOrOutlayState>(
-                              builder: (context, state) {
-                                if (state.status == FormzSubmissionStatus.inProgress) {
-                                  return const Align(
-                                    alignment: Alignment.center,
-                                    child: CircularProgressIndicator(),
-                                  );
-                                } else if (state.status == FormzSubmissionStatus.success) {
-                                  return state.outlays.isNotEmpty
-                                      ? OutlaysList(
-                                          outlays: state.outlays,
-                                        )
-                                      : Align(
-                                          child: Text(
-                                            "Ma'lumotlar mavjud emas!",
-                                            style: GoogleFonts.nunito(
-                                              fontSize: 25,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        );
-                                } else {
-                                  return Container();
-                                }
-                              },
-                            )
+                            _buildTransactionList(true),
+                            _buildTransactionList(false),
                           ],
                         ),
                       )
@@ -205,6 +184,68 @@ class _AccountPageState extends State<AccountPage> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTransactionList(bool isIncome) {
+    return BlocBuilder<IncomeOrOutlayBloc, IncomeOrOutlayState>(
+      builder: (context, state) {
+        if (state.status.isInProgress) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state.status == FormzSubmissionStatus.success) {
+          return state.incomes.isNotEmpty || state.outlays.isNotEmpty
+              ? Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Umumiy:',
+                            style: GoogleFonts.nunito(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            '${moneyFormatter.formatter(data: isIncome ? state.summaK : state.summaCh)} UZS',
+                            style: GoogleFonts.nunito(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: isIncome
+                          ? IncomesList(
+                              incomes: state.incomes,
+                              onDelete: (id) =>
+                                  deleteTransaction(id, state, true),
+                            )
+                          : OutlaysList(
+                              outlays: state.outlays,
+                              onDelete: (id) =>
+                                  deleteTransaction(id, state, false),
+                            ),
+                    ),
+                  ],
+                )
+              : Align(
+                  child: Text(
+                    "Ma'lumotlar mavjud emas!",
+                    style: GoogleFonts.nunito(
+                      fontSize: 25,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                );
+        } else {
+          return const SizedBox.shrink();
+        }
+      },
     );
   }
 }

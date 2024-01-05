@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,12 +8,13 @@ import 'package:math_expressions/math_expressions.dart';
 import 'calculator_button.dart';
 
 class Calculator extends StatefulWidget {
-  String summa;
-  String expressionHistory;
-  Function(String) onGetSumma;
-  Function(String) onGetExpression;
+  final String summa;
+  final String expressionHistory;
+  final Function(String) onGetSumma;
+  final Function(String) onGetExpression;
 
-  Calculator({
+  const Calculator({
+    super.key,
     required this.summa,
     required this.expressionHistory,
     required this.onGetSumma,
@@ -83,8 +86,33 @@ class _CalculatorState extends State<Calculator> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Container(
+            margin: const EdgeInsets.only(right: 5, top: 5, bottom: 5),
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Ink(
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(
+                    6,
+                  ),
+                ),
+                child: InkWell(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: const Padding(
+                    padding: EdgeInsets.all(5),
+                    child: Icon(
+                      CupertinoIcons.xmark,
+                      color: Colors.white,
+                      size: 15,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Container(
             padding: EdgeInsets.zero,
-            margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+            margin: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
               border: Border.all(),
@@ -107,11 +135,11 @@ class _CalculatorState extends State<Calculator> {
                 TextField(
                   keyboardType: TextInputType.number,
                   controller: _expressionController,
-                  textAlignVertical: TextAlignVertical.bottom,
+                  textAlignVertical: TextAlignVertical.top,
                   style: GoogleFonts.nunito(
                     fontSize: 18,
                   ),
-                  maxLines: 2,
+                  maxLines: null,
                   decoration: const InputDecoration(
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: 10,
@@ -127,12 +155,12 @@ class _CalculatorState extends State<Calculator> {
           Expanded(
             child: GridView.builder(
               padding: const EdgeInsets.only(bottom: 10),
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              // physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
-                crossAxisSpacing: 5,
-                mainAxisSpacing: 5,
-                childAspectRatio: MediaQuery.sizeOf(context).height * 0.00155,
+                crossAxisSpacing: 4,
+                mainAxisSpacing: 1,
+                childAspectRatio: 1.6,
               ),
               itemBuilder: (BuildContext context, int index) {
                 return CalculatorButton(

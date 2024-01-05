@@ -11,6 +11,17 @@ abstract class IncomeOrOutlayRepository {
     required int status,
     required DateTime dateTime,
   });
+  Future updateIncomeOrOutlay({
+    required int id,
+    required int debtorId,
+    required int currencyId,
+    required int currencyConvert,
+    required String expressionHistory,
+    required double money,
+    required int status,
+    required DateTime dateTime,
+  });
+  Future deleteIncomeOrOutlay({required int id});
 }
 
 class GetIncomeOrOutlayRepository extends IncomeOrOutlayRepository {
@@ -52,6 +63,48 @@ class AddIncomeOrOutlayRepository extends IncomeOrOutlayRepository {
       status: status,
       dateTime: dateTime,
     );
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class UpdateIncomeOrOutlayRepository extends IncomeOrOutlayRepository {
+  final UpdateIncomeOrOutlayService _updateIncomeOrOutlayService;
+  UpdateIncomeOrOutlayRepository(this._updateIncomeOrOutlayService);
+  @override
+  Future updateIncomeOrOutlay(
+      {required int id,
+      required int debtorId,
+      required int currencyId,
+      required int currencyConvert,
+      required String expressionHistory,
+      required double money,
+      required int status,
+      required DateTime dateTime}) async {
+    await _updateIncomeOrOutlayService.updateIncomeOrOutlay(
+      id: id,
+      debtorId: debtorId,
+      currencyId: currencyId,
+      currencyConvert: currencyConvert,
+      expressionHistory: expressionHistory,
+      money: money,
+      status: status,
+      dateTime: dateTime,
+    );
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class DeleteIncomeOrOutlayRepository extends IncomeOrOutlayRepository {
+  final DeleteIncomeOrOutlayService _deleteIncomeOrOutlayService;
+  DeleteIncomeOrOutlayRepository(this._deleteIncomeOrOutlayService);
+
+  @override
+  Future deleteIncomeOrOutlay({required int id}) async {
+    await _deleteIncomeOrOutlayService.deleteIncomeOrOutlay(id: id);
   }
 
   @override

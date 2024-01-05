@@ -1,4 +1,4 @@
-import 'package:financialjournal_app/utils/app_storage.dart';
+import 'app_storage.dart';
 
 class GenerateAuth {
   final SecureAppStorage _appStorage = SecureAppStorage();

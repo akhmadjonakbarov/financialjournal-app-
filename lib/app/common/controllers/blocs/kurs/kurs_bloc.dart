@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:financialjournal_app/app/common/controllers/repositories/kurs_repository.dart';
-import 'package:financialjournal_app/app/common/controllers/services/kurs_service.dart';
-import 'package:financialjournal_app/app/common/models/kurs_model.dart';
+import '../../repositories/kurs_repository.dart';
+import '../../services/kurs_service.dart';
+import '../../../models/kurs_model.dart';
 import 'package:formz/formz.dart';
 
 part 'kurs_event.dart';

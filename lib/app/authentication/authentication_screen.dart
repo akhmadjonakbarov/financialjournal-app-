@@ -1,9 +1,10 @@
-import 'screens/login/login_screen.dart';
-import 'screens/register/register_screen.dart';
-import 'widgets/auth_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import 'screens/login/login_screen.dart';
+import 'screens/register/register_screen.dart';
+import 'widgets/auth_button.dart';
 
 class AuthenticationScreen extends StatefulWidget {
   const AuthenticationScreen({super.key});
@@ -72,7 +73,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                     ),
                     child: Text(
                       'Smart Finances',
-                      style: GoogleFonts.roboto(fontSize: 24, fontWeight: FontWeight.bold),
+                      style: GoogleFonts.roboto(
+                          fontSize: 24, fontWeight: FontWeight.bold),
                     ),
                   ),
                   Text(
@@ -80,7 +82,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                     style: GoogleFonts.roboto(fontSize: 16),
                   ),
                   Container(
-                    margin: EdgeInsets.only(top: MediaQuery.sizeOf(context).height * 0.05),
+                    margin: EdgeInsets.only(
+                        top: MediaQuery.sizeOf(context).height * 0.01),
                     child: Column(
                       children: [
                         AuthButton(
@@ -92,14 +95,16 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                           },
                         ),
                         const SizedBox(
-                          height: 10,
+                          height: 5,
                         ),
                         AuthButton(
                           title: 'Kirish',
                           onTap: () {
-                            Navigator.of(context).push(CupertinoPageRoute(
-                              builder: (context) => const LoginScreen(),
-                            ));
+                            Navigator.of(context).push(
+                              CupertinoPageRoute(
+                                builder: (context) => const LoginScreen(),
+                              ),
+                            );
                           },
                         )
                       ],

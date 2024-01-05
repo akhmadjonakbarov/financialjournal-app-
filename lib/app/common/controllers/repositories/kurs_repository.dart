@@ -1,4 +1,4 @@
-import 'package:financialjournal_app/app/common/controllers/services/kurs_service.dart';
+import '../services/kurs_service.dart';
 
 abstract class KursRepository {
   Future getKurss();

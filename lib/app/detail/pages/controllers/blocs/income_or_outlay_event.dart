@@ -37,7 +37,29 @@ class IncomeAddEvent extends IncomeOrOutlayEvent {
   });
 }
 
-class OutlayAddEvent extends IncomeOrOutlayBloc {
+class IncomeOrOutlayUpdateEvent extends IncomeOrOutlayEvent {
+  final int id;
+  final int debtorId;
+  final int currencyId;
+  final int currencyConvert;
+  final String expressionHistory;
+  final double money;
+  int status;
+  final DateTime dateTime;
+
+  IncomeOrOutlayUpdateEvent({
+    required this.id,
+    required this.debtorId,
+    required this.currencyId,
+    required this.currencyConvert,
+    required this.expressionHistory,
+    required this.money,
+    this.status = 0,
+    required this.dateTime,
+  });
+}
+
+class OutlayAddEvent extends IncomeOrOutlayEvent {
   final int debtorId;
   final int currencyId;
   final int currencyConvert;
@@ -55,4 +77,10 @@ class OutlayAddEvent extends IncomeOrOutlayBloc {
     this.status = 1,
     required this.dateTime,
   });
+}
+
+class DeleteIcomeOrOutlayEvent extends IncomeOrOutlayEvent {
+  int debtorId;
+  int id;
+  DeleteIcomeOrOutlayEvent({required this.id, required this.debtorId});
 }

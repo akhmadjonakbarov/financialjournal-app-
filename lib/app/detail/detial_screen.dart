@@ -1,19 +1,25 @@
+// ignore_for_file: must_be_immutable
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../home/models/debtor_model.dart';
-
+import '../on_board/controllers/blocs/debtor/debtor_bloc.dart';
 import 'pages/account_page.dart';
 import 'pages/add_income_page.dart';
 import 'pages/add_outlay_page.dart';
 import 'widgets/custom_app_bar.dart';
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-
 class DetailScreen extends StatefulWidget {
-  final DebtorModel debtor;
+  String debtorName;
+  int debtorId;
 
-  const DetailScreen({super.key, required this.debtor});
+  DetailScreen({
+    super.key,
+    required this.debtorName,
+    required this.debtorId,
+  });
 
   @override
   State<DetailScreen> createState() => _DetailScreenState();
@@ -22,6 +28,21 @@ class DetailScreen extends StatefulWidget {
 class _DetailScreenState extends State<DetailScreen> {
   @override
   void didChangeDependencies() {
+    if (widget.debtorName.isEmpty) {
+      context.read<DebtorBloc>().getSingleDebtor(widget.debtorId).then((value) {
+        setState(() {
+          widget.debtorName = value.name;
+          widget.debtorId = value.id;
+        });
+      });
+    } else {
+      context.read<DebtorBloc>().getSingleDebtor(widget.debtorId).then((value) {
+        setState(() {
+          widget.debtorName = value.name;
+          widget.debtorId = value.id;
+        });
+      });
+    }
     super.didChangeDependencies();
   }
 
@@ -34,7 +55,7 @@ class _DetailScreenState extends State<DetailScreen> {
           child: Column(
             children: [
               CustomAppBar(
-                text: widget.debtor.name,
+                text: widget.debtorName,
                 isBackButton: true,
               ),
               Container(
@@ -83,9 +104,17 @@ class _DetailScreenState extends State<DetailScreen> {
               Expanded(
                 child: TabBarView(
                   children: [
-                    AccountPage(debtor: widget.debtor),
-                    AddIncomePage(debtor: widget.debtor),
-                    AddOutlayPage(debtor: widget.debtor),
+                    AccountPage(
+                      debtorId: widget.debtorId,
+                    ),
+                    AddIncomePage(
+                      debtorId: widget.debtorId,
+                      isUpdate: false,
+                    ),
+                    AddOutlayPage(
+                      debtorId: widget.debtorId,
+                      isUpdate: false,
+                    ),
                   ],
                 ),
               )

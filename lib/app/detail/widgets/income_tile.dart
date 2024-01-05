@@ -1,16 +1,25 @@
-import 'package:financialjournal_app/app/detail/pages/add_income_page.dart';
+import 'package:financialjournal_app/app/detail/detial_screen.dart';
 
-import '../../../utils/money_formatter.dart';
+import '../pages/controllers/blocs/income_or_outlay_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
-import '../pages/models/Income_model.dart';
+import '../../../utils/money_formatter.dart';
+import '../pages/add_income_page.dart';
+import '../pages/models/income_model.dart';
 
 class IncomeTile extends StatefulWidget {
   final IncomeModel income;
-  const IncomeTile({super.key, required this.income});
+  final Function(int) onDelete;
+
+  const IncomeTile({
+    super.key,
+    required this.income,
+    required this.onDelete,
+  });
 
   @override
   State<IncomeTile> createState() => _IncomeTileState();
@@ -30,7 +39,6 @@ class _IncomeTileState extends State<IncomeTile> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Ink(
-                  // width: 80,
                   height: 40,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
@@ -39,8 +47,8 @@ class _IncomeTileState extends State<IncomeTile> {
                   child: InkWell(
                     borderRadius: BorderRadius.circular(16),
                     onTap: () {
-                      _showDeleteDialog();
                       Navigator.of(context).pop();
+                      _showDeleteDialog();
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -65,9 +73,20 @@ class _IncomeTileState extends State<IncomeTile> {
                   ),
                   child: InkWell(
                     borderRadius: BorderRadius.circular(16),
-                    onTap: () => Navigator.of(context).push(CupertinoPageRoute(
-                      builder: (context) => AddIncomePage(),
-                    )),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => AddIncomePage(
+                            isUpdate: true,
+                            debtorId: widget.income.debtorId,
+                          ),
+                          settings: RouteSettings(
+                            arguments: widget.income,
+                          ),
+                        ),
+                      );
+                    },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Align(
@@ -119,7 +138,25 @@ class _IncomeTileState extends State<IncomeTile> {
                   child: InkWell(
                     borderRadius: BorderRadius.circular(16),
                     onTap: () {
+                      widget.onDelete(widget.income.id);
+                      context.read<IncomeOrOutlayBloc>().add(
+                            DeleteIcomeOrOutlayEvent(
+                              id: widget.income.id,
+                              debtorId: widget.income.debtorId,
+                            ),
+                          );
+
                       Navigator.of(context).pop();
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (builder) {
+                            return DetailScreen(
+                              debtorName: '',
+                              debtorId: widget.income.debtorId,
+                            );
+                          },
+                        ),
+                      );
                     },
                     child: Align(
                       alignment: Alignment.center,
@@ -213,15 +250,25 @@ class _IncomeTileState extends State<IncomeTile> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    '${moneyFormatter.formatter(data: widget.income.money)} UZS',
-                    style: GoogleFonts.nunito(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                  if (widget.income.currencyConvert == 1)
+                    Text(
+                      '${moneyFormatter.formatter(data: widget.income.money)} \$',
+                      style: GoogleFonts.nunito(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )
+                  else
+                    Text(
+                      '${moneyFormatter.formatter(data: widget.income.money)} UZS',
+                      style: GoogleFonts.nunito(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
                   Text(
-                    DateFormat("HH:MM / dd-MM-y").format(widget.income.dateTime),
+                    DateFormat("HH:MM / dd-MM-y")
+                        .format(widget.income.dateTime),
                     style: GoogleFonts.nunito(
                       fontSize: 16,
                     ),

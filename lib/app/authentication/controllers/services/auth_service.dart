@@ -72,6 +72,7 @@ class AppAuthService implements AuthServices {
       Response response = await _dio.post(
         loginURL,
       );
+
       if (response.statusCode == 200) {
         Map<String, dynamic> resData = response.data as Map<String, dynamic>;
         user = UserModel(
@@ -81,8 +82,13 @@ class AppAuthService implements AuthServices {
           refreshToken: resData['data']['refresh_token'],
           phoneNumber: resData['data']['user']['phone'],
         );
+      } else if (response.statusCode == 404) {
+        throw "username or password is uncorrect";
       }
     } on DioException catch (error) {
+      if (error.response!.statusCode == 401) {
+        throw "username or password is uncorrect";
+      }
       rethrow;
     }
     return user!;

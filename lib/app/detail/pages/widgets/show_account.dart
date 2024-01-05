@@ -1,13 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../utils/money_formatter.dart';
 
 class ShowAccount extends StatelessWidget {
-  double sum_;
-   ShowAccount({super.key, required this.sum_});
-  MoneyFormatter moneyFormatter = MoneyFormatter();
+  final double sum_;
+  ShowAccount({super.key, required this.sum_});
+  final MoneyFormatter moneyFormatter = MoneyFormatter();
 
   @override
   Widget build(BuildContext context) {

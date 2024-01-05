@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:financialjournal_app/app/common/models/kurs_model.dart';
-import 'package:financialjournal_app/utils/generate_auth.dart';
+import '../../models/kurs_model.dart';
+import '../../../../utils/generate_auth.dart';
 
 import '../../../../utils/dio/dio_settings.dart';
 import '../../../../utils/service_locator.dart/service_locator.dart';
