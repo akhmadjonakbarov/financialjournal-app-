@@ -1,8 +1,9 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'dart:developer';
 
-
 import 'package:bloc/bloc.dart';
-import 'package:financialjournal_app/utils/connectivity_service.dart';
+import '../../../../utils/connectivity_service.dart';
 import '../repository/auth_repository.dart';
 import '../services/auth_service.dart';
 import '../../../../utils/app_storage.dart';
@@ -26,6 +27,7 @@ class AuthenticationBloc
     on<AppStartEvent>(_appStarted);
     on<LoginEvent>(_login);
     on<RegisterEvent>(_register);
+    on<LogoutEvent>(_logOut);
   }
 
   _appStarted(
@@ -76,6 +78,9 @@ class AuthenticationBloc
         user: user,
       ));
     } catch (e) {
+      if (e.toString().contains('username or password is uncorrect')) {
+        emit(LoginOrPasswordIncorrectState());
+      }
       emit(AuthenticationErrorState(
         errorMessage: e.toString(),
       ));
@@ -94,6 +99,21 @@ class AuthenticationBloc
       emit(AuthenticatedState(
         user: user,
       ));
+    } catch (e) {
+      emit(AuthenticationErrorState(
+        errorMessage: e.toString(),
+      ));
+    }
+  }
+
+  _logOut(
+    LogoutEvent event,
+    Emitter<AuthenticationState> emit,
+  ) async {
+    try {
+      await secureAppStorage.deleteToken();
+      emit(UnAuthenticatedState());
+      log("_logOut");
     } catch (e) {
       emit(AuthenticationErrorState(
         errorMessage: e.toString(),

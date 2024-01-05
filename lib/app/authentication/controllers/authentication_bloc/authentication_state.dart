@@ -22,3 +22,5 @@ class AuthenticationErrorState extends AuthenticationState {
 
   AuthenticationErrorState({required this.errorMessage});
 }
+
+class LoginOrPasswordIncorrectState extends AuthenticationState {}

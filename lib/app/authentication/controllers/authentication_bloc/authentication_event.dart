@@ -17,6 +17,11 @@ class RegisterEvent extends AuthenticationEvent {
   final String username;
   final String password;
 
-  RegisterEvent(
-      {required this.name, required this.username, required this.password});
+  RegisterEvent({
+    required this.name,
+    required this.username,
+    required this.password,
+  });
 }
+
+class LogoutEvent extends AuthenticationEvent {}
